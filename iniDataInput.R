@@ -10,10 +10,54 @@
 library(ini)  # 加载ini数据处理package
 
 # 加载数据导入需要的函数
-#source('E:/R/iniFile/Functions.R', encoding = 'UTF-8')
+source('E:/R/iniFile/Functions.R', encoding = 'UTF-8')
 
-tfile <- read.ini(filepath = "E:/R/iniFile/Data/Event196.ini",
-                  encoding = getOption("encoding"))
+
+# Main--------------------------------------------------------------------------
+setwd("E:/R/iniFile/Data/")
+get.filename <- list.files(path = "E:/R/iniFile/Data/", pattern = ".ini")
+get.dfname <- gsub(pattern = ".ini", replacement = "", x = get.filename)
+
+df.eventdata <- data.frame()
+
+for (i in 1:length(get.filename)) {
+  
+  tfile <- read.ini(filepath = get.filename[i],
+                    encoding = getOption("encoding"))  # 单个ini导入
+  
+  tmp.eventdf <- data.frame(eventNum = get.dfname[i])  # 事件编号
+  
+  # Basic Information数据提取
+  tmp.eventdf <- cbind(tmp.eventdf,
+                       GetBasicInformation(tfile))
+  
+  # Move Information数据提取
+  for (kTimeNum in 0:47) {
+    tmp.eventdf <- cbind(tmp.eventdf,
+                         GetMoveInformation(tfile,
+                                            kTag = paste("Move Information",
+                                                         i, sep = ""),
+                                            kTime = paste("Time",
+                                                          i, sep = "")))
+  }
+  
+  # 合并数据
+  df.eventdata <- rbind(df.eventdata, tmp.eventdf)
+}
+
+
+
+
+
+
+
+
+
+
+
+# tfile <- read.ini(filepath = "E:/R/iniFile/Data/Event196.ini",
+#                   encoding = getOption("encoding"))
+
 
 # Basic Information----
 # BI, recordDate----
@@ -188,13 +232,13 @@ tmp.speedKMHtime9 <- strsplit(tfile$`Move Information9`$GPS,
 
 # Move Information 10----
 tmp.fwdtime10 <- strsplit(tfile$`Move Information10`$FWD,
-                         split = " ")[[1]][2]  # FWD, time -5.75
+                          split = " ")[[1]][2]  # FWD, time -5.75
 tmp.lattime10 <- strsplit(tfile$`Move Information10`$LAT,
-                         split = " ")[[1]][2]  # LAT, time -5.75
+                          split = " ")[[1]][2]  # LAT, time -5.75
 tmp.movetime10 <- strsplit(tfile$`Move Information10`$TIME,
-                          split = " ")[[1]][2]  # TIME, time -5.75
+                           split = " ")[[1]][2]  # TIME, time -5.75
 tmp.speedKMHtime10 <- strsplit(tfile$`Move Information10`$GPS,
-                              split = " ")[[1]][1]  # GPS(Speed), time -5.75
+                               split = " ")[[1]][1]  # GPS(Speed), time -5.75
 
 
 # Move Information 11----
@@ -602,7 +646,6 @@ tmp.movetime47 <- strsplit(tfile$`Move Information47`$TIME,
                            split = " ")[[1]][2]  # TIME, time +3.50
 tmp.speedKMHtime47 <- strsplit(tfile$`Move Information47`$GPS,
                                split = " ")[[1]][1]  # GPS(Speed), time +3.50
-
 
 
 
