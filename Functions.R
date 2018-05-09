@@ -75,63 +75,103 @@ GetBasicInformation <- function(tFile) {
   # Output: 含Basic Information各项信息的数据框。
   
   # BI, recordDate----
-  tmp.recorddate <- tfile$`Basic Information`$Record_Date  # 原始recordDate
-  tmp.dayoftheweek <- GetDayoftheWeek(strsplit(tmp.recorddate,
-                                               split = ",")[[1]][1])  # 星期几
-  tmp.month <- GetMonth(strsplit(strsplit(tmp.recorddate, split = ",")[[1]][2],
-                                 split = " ")[[1]][2])  # 月份
-  tmp.date <- strsplit(strsplit(tmp.recorddate, split = ",")[[1]][2],
-                       split = " ")[[1]][3]  # 日
-  tmp.year <- strsplit(strsplit(tmp.recorddate, split = ",")[[1]][3],
-                       split = " ")[[1]][2]  # 年
+  if (!is.null(tfile$`Basic Information`$Record_Date)) {
+  
+    tmp.recorddate <- tfile$`Basic Information`$Record_Date  # 原始recordDate
+    tmp.dayoftheweek <- GetDayoftheWeek(strsplit(tmp.recorddate,
+                                                 split = ",")[[1]][1])  # 星期几
+    tmp.month <- GetMonth(strsplit(strsplit(tmp.recorddate,
+                                            split = ",")[[1]][2],
+                                   split = " ")[[1]][2])  # 月份
+    tmp.date <- strsplit(strsplit(tmp.recorddate, split = ",")[[1]][2],
+                         split = " ")[[1]][3]  # 日
+    tmp.year <- strsplit(strsplit(tmp.recorddate, split = ",")[[1]][3],
+                         split = " ")[[1]][2]  # 年
+  } else {
+    tmp.dayoftheweek <- NA
+    tmp.month <- NA
+    tmp.date <- NA
+    tmp.year <- NA
+  }
   
   # BI, eventTime----
-  tmp.eventtime <- tfile$`Basic Information`$Time_Of_Event  # 原始eventTime
-  tmp.time <- strsplit(tmp.eventtime, split = " ")[[1]][1]  # 时间，12h
-  tmp.timehour <- strsplit(strsplit(tmp.eventtime, split = " ")[[1]][1],
-                           ":")[[1]][1]  # 时间，12h，时
-  tmp.timeminute <- strsplit(strsplit(tmp.eventtime, split = " ")[[1]][1],
-                             ":")[[1]][2]  # 时间，12h，分
-  tmp.ampm <- ifelse(strsplit(tmp.eventtime, split = " ")[[1]][2] == "上午",
-                     "A.M.", "P.M.")  # 时段
-  tmp.timezone <- strsplit(tmp.eventtime, split = " ")[[1]][3]  # 时区
+  if (!is.null(tfile$`Basic Information`$Time_Of_Event)) {
+    
+    tmp.eventtime <- tfile$`Basic Information`$Time_Of_Event  # 原始eventTime
+    tmp.time <- strsplit(tmp.eventtime, split = " ")[[1]][1]  # 时间，12h
+    tmp.timehour <- strsplit(tmp.time, split = ":")[[1]][1]  # 时间，12h，时
+    tmp.timeminute <- strsplit(tmp.time, split = ":")[[1]][2]  # 时间，12h，分
+    tmp.ampm <- ifelse(strsplit(tmp.eventtime, split = " ")[[1]][2] == "上午",
+                       "A.M.", "P.M.")  # 时段
+    tmp.timezone <- strsplit(tmp.eventtime, split = " ")[[1]][3]  # 时区
+  } else {
+    tmp.timehour <- NA
+    tmp.timeminute <- NA
+    tmp.ampm <- NA
+    tmp.timezone <- NA
+  }
   
   # BI, eventTrigger----
-  tmp.eventtrigger <- tfile$`Basic Information`$Event_Trigger
+  tmp.eventtrigger <- ifelse(!is.null(tfile$`Basic Information`$Event_Trigger),
+                             tfile$`Basic Information`$Event_Trigger,
+                             NA)
   
   # BI, maxForwardTForce----
-  tmp.maxforwardtforce <- tfile$`Basic Information`$Max_Forward_T_Force
+  tmp.maxforwardtforce <- ifelse(!is.null(tfile$`Basic Information`$Max_Forward_T_Force),
+                                 tfile$`Basic Information`$Max_Forward_T_Force,
+                                 NA)
   
   # BI, maxLateralTForce----
-  tmp.maxlateraltforce <- tfile$`Basic Information`$Max_Lateral_T_Force
+  tmp.maxlateraltforce <- ifelse(!is.null(tfile$`Basic Information`$Max_Lateral_T_Force),
+                                 tfile$`Basic Information`$Max_Lateral_T_Force,
+                                 NA)
   
   # BI, triggerSpeed----
-  tmp.triggerspeedKMH <- strsplit(tfile$`Basic Information`$Speed,
-                                  split = " ")[[1]][1]
+  tmp.triggerspeedKMH <- ifelse(!is.null(strsplit(tfile$`Basic Information`$Speed,
+                                                  split = " ")[[1]][1]),
+                                strsplit(tfile$`Basic Information`$Speed,
+                                         split = " ")[[1]][1],
+                                NA)
   
   # BI, moveDirection----
-  tmp.moveDirection <- tfile$`Basic Information`$Heading
+  tmp.moveDirection <- ifelse(!is.null(tfile$`Basic Information`$Heading),
+                              tfile$`Basic Information`$Heading,
+                              NA)
   
   # BI, locationLatitude----
-  tmp.locationlatitude <- tfile$`Basic Information`$Loaction_N
+  tmp.locationlatitude <- ifelse(!is.null(tfile$`Basic Information`$Loaction_N),
+                                 tfile$`Basic Information`$Loaction_N,
+                                 NA)
   
   # BI, locationLongitude----
-  tmp.locationlongitude <- tfile$`Basic Information`$Loaction_E
+  tmp.locationlongitude <- ifelse(!is.null(tfile$`Basic Information`$Loaction_E),
+                                  tfile$`Basic Information`$Loaction_E,
+                                  NA)
   
   # BI, serialNumber----
-  tmp.serialnumber <- tfile$`Basic Information`$Serial_Number
+  tmp.serialnumber <- ifelse(!is.null(tfile$`Basic Information`$Serial_Number),
+                             tfile$`Basic Information`$Serial_Number,
+                             NA)
   
   # BI, firmwareVersion----
-  tmp.firmwareversion <- tfile$`Basic Information`$Firmware_Version
+  tmp.firmwareversion <- ifelse(!is.null(tfile$`Basic Information`$Firmware_Version),
+                                tfile$`Basic Information`$Firmware_Version,
+                                NA)
   
   # BI, forwardThreshold----
-  tmp.forwardthreshold <- tfile$`Basic Information`$Forward_Threshold
+  tmp.forwardthreshold <- ifelse(!is.null(tfile$`Basic Information`$Forward_Threshold),
+                                 tfile$`Basic Information`$Forward_Threshold,
+                                 NA)
   
   # BI, lateralThreshold----
-  tmp.lateralthreshold <- tfile$`Basic Information`$Lateral_Threshold
+  tmp.lateralthreshold <- ifelse(!is.null(tfile$`Basic Information`$Lateral_Threshold),
+                                 tfile$`Basic Information`$Lateral_Threshold,
+                                 NA)
   
   # BI, shockThreshold----
-  tmp.shockthreshold <- tfile$`Basic Information`$Shock_Threshold
+  tmp.shockthreshold <- ifelse(!is.null(tfile$`Basic Information`$Shock_Threshold),
+                               tfile$`Basic Information`$Shock_Threshold,
+                               NA)
   
   return(data.frame(dDayoftheWeek = c(tmp.dayoftheweek),
                     dMonth = c(tmp.month),
@@ -193,34 +233,4 @@ GetMoveInformation <- function(tfile,
   }
 }
 
-df <- data.frame()
-df <- rbind(df, aa)
 
-tt <- data.frame(dDayoftheWeek = tmp.dayoftheweek,
-                 dMonth = tmp.month,
-                 dDate = tmp.date,
-                 dYear = tmp.year,
-                 timeHour = tmp.timehour,
-                 timeMinute = tmp.timeminute,
-                 timeAMPM = tmp.ampm,
-                 timeTimeZone = tmp.timezone,
-                 evetTrigger = tmp.eventtrigger,
-                 maxForwardTForce = tmp.maxforwardtforce,
-                 maxLateralTForce = tmp.maxlateraltforce,
-                 triggerSpeedKMH = tmp.triggerspeedKMH,
-                 moveDirection = tmp.moveDirection,
-                 locationLatitude = tmp.locationlatitude,
-                 locationLongitude = tmp.locationlongitude,
-                 serialNumber = tmp.serialnumber,
-                 firmwareVersion = tmp.firmwareversion,
-                 forwardThreshold = tmp.forwardthreshold,
-                 lateralThreshold = tmp.lateralthreshold,
-                 shockThreshold = tmp.shockthreshold)
-
-
-
-tmp.locationlongitude
-
-
-data.frame(tDayoftheWeek = tmp.dayoftheweek,
-           tMonth = c(tmp.month))
