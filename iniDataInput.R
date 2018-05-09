@@ -74,10 +74,8 @@ tmp.year <- strsplit(strsplit(tmp.recorddate, split = ",")[[1]][3],
 # BI, eventTime----
 tmp.eventtime <- tfile$`Basic Information`$Time_Of_Event  # 原始eventTime
 tmp.time <- strsplit(tmp.eventtime, split = " ")[[1]][1]  # 时间，12h
-tmp.timehour <- strsplit(strsplit(tmp.eventtime, split = " ")[[1]][1],
-                         ":")[[1]][1]  # 时间，12h，时
-tmp.timeminute <- strsplit(strsplit(tmp.eventtime, split = " ")[[1]][1],
-                           ":")[[1]][2]  # 时间，12h，分
+tmp.timehour <- strsplit(tmp.time, split = ":")[[1]][1]  # 时间，12h，时
+tmp.timeminute <- strsplit(tmp.time, split = ":")[[1]][2]  # 时间，12h，分
 tmp.ampm <- ifelse(strsplit(tmp.eventtime, split = " ")[[1]][2] == "上午",
                    "A.M.", "P.M.")  # 时段
 tmp.timezone <- strsplit(tmp.eventtime, split = " ")[[1]][3]  # 时区
