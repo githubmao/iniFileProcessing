@@ -2,7 +2,10 @@
 # Description: 导入.ini数据，并将其整理成需要的数据格式，需要的函数。
 #
 # Notes:
-# 
+#   GetDayoftheWeek: 获取事件发生的时间，星期几。
+#   GetMonth: 获取事件发生的时间，月份。
+#   GetBasicInformation: 获取ini数据中Basic Information标签下数据。
+#   GetMoveInformation: 获取ini数据中Move Information标签下数据。
 #
 #------------------------------------------------------------------------------#
 
@@ -210,10 +213,20 @@ GetMoveInformation <- function(tfile,
   if (length(which(names(tfile) == kTag)) != 0) {
     
     kTagNumber <- which(names(tfile) == kTag)
-    tmp.fwd <- strsplit(tfile[[kTagNumber]]$FWD, split = " ")[[1]][2]
-    tmp.lat <- strsplit(tfile[[kTagNumber]]$LAT, split = " ")[[1]][2]
-    tmp.movetime <- strsplit(tfile[[kTagNumber]]$TIME, split = " ")[[1]][2]
-    tmp.speed <- strsplit(tfile[[kTagNumber]]$GPS, split = " ")[[1]][1]
+    
+    tmp.fwd <- ifelse(!is.null(tfile[[kTagNumber]]$FWD),
+                      strsplit(tfile[[kTagNumber]]$FWD, split = " ")[[1]][2],
+                      NA)
+    tmp.lat <- ifelse(!is.null(tfile[[kTagNumber]]$LAT),
+                      strsplit(tfile[[kTagNumber]]$LAT, split = " ")[[1]][2],
+                      NA)
+    tmp.movetime <- ifelse(!is.null(tfile[[kTagNumber]]$TIME),
+                           strsplit(tfile[[kTagNumber]]$TIME,
+                                    split = " ")[[1]][2],
+                           NA)
+    tmp.speed <- ifelse(!is.null(tfile[[kTagNumber]]$GPS),
+                        strsplit(tfile[[kTagNumber]]$GPS, split = " ")[[1]][1],
+                        NA)
     
     kColName <- c(paste("fwd", kTime, sep = ""),
                   paste("lat", kTime, sep = ""),
@@ -234,3 +247,4 @@ GetMoveInformation <- function(tfile,
 }
 
 
+                 
