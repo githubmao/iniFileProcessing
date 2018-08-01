@@ -313,68 +313,116 @@ GetBasicInformation <- function(tFile) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 4. 获取ini文件中的Move Information----
-GetMoveInformation <- function(tfile,
-                               kTag = "kTag",
-                               kTime = "Time1") {
+# 4. 获取单个ini文件中的某一Move Information----
+GetMoveInfo <- function(tFile,
+                        kTime = NA,
+                        kTag = NA){
   # Input: 
-  #  tfile: 读取的ini文件。
-  #  kTag: 读取的Tag标签。
-  #  kTime: 读取的时间标签
+  #  tFile: 读取的单个ini文件。
+  #  kTime: 目标时间。
+  #  kTag: 返回数据框的时间标签。
   #
   # Output: 含Move Information各项信息的数据框。
   
-  if (length(which(names(tfile) == kTag)) != 0) {
+  if (is.na(kTime)) {
+    stop("Please input the 'kTime'.")  # 没有输入kTime
+  } else if (is.na(kTag)) {
+    stop("Please input the 'kTag'.")  # 没有输入kTag
+  } else if (is.character(kTime) & is.character(kTag)) {
     
-    kTagNumber <- which(names(tfile) == kTag)
+    tmp.list <- tFile[-length(names(tFile))]  # 只含MoveInformation的list
+    list.moveinfo <- list.filter(tmp.list, TIME == kTime)  # 目标list
     
-    tmp.fwd <- ifelse(!is.null(tfile[[kTagNumber]]$FWD),
-                      strsplit(tfile[[kTagNumber]]$FWD, split = " ")[[1]][2],
-                      NA)
-    tmp.lat <- ifelse(!is.null(tfile[[kTagNumber]]$LAT),
-                      strsplit(tfile[[kTagNumber]]$LAT, split = " ")[[1]][2],
-                      NA)
-    tmp.movetime <- ifelse(!is.null(tfile[[kTagNumber]]$TIME),
-                           strsplit(tfile[[kTagNumber]]$TIME,
-                                    split = " ")[[1]][2],
-                           NA)
-    tmp.speed <- ifelse(!is.null(tfile[[kTagNumber]]$GPS),
-                        strsplit(tfile[[kTagNumber]]$GPS, split = " ")[[1]][1],
-                        NA)
+    # 有满足kTimeTag时间点的 Move Information 列表
+    if (length(list.moveinfo) != 0) {
+      
+      # FWD
+      tmp.fwd <- strsplit(x = list.moveinfo[[1]]$FWD, split = " ")[[1]][2]
+      # LAT
+      tmp.lat <- strsplit(x = list.moveinfo[[1]]$LAT, split = " ")[[1]][2]
+      # Time
+      tmp.movetime <- kTime
+      # GPS, Speed
+      tmp.speed <- strsplit(x = list.moveinfo[[1]]$GPS, split = " ")[[1]][1]
+      
+      # 没有满足kTimeTag时间点的 Move Information 列表
+    } else {
+      tmp.fwd <- NA
+      tmp.lat <- NA
+      tmp.movetime <- kTime
+      tmp.speed <- NA
+    }
     
-    kColName <- c(paste("fwd", kTime, sep = ""),
-                  paste("lat", kTime, sep = ""),
-                  paste("move", kTime, sep = ""),
-                  paste("speed", kTime, sep = ""))
+    # 返回数据框变量名
+    kColName <- c(paste("fwd", kTag, sep = ""),
+                  paste("lat", kTag, sep = ""),
+                  paste("move", kTag, sep = ""),
+                  paste("speedKMH", kTag, sep = ""))
     
-    tmp.df <- data.frame(c(tmp.fwd),
-                         c(tmp.lat),
-                         c(tmp.movetime),
-                         c(tmp.speed))
-    
+    tmp.df <- data.frame(tmp.fwd, tmp.lat, tmp.movetime, tmp.speed)
     names(tmp.df) <- kColName
+    
     return(tmp.df)
     
   } else {
-    return("False kTag")
+    stop("Please check the input 'kTime' and 'kTag'.\
+  The 'kTime' should be a character variable.\
+  The 'kTag' should be a character variable.")
   }
 }
+
+
+# 5. 批量读取单个ini文件中的所有Move Information----
+GetBatchMoveInfo <- function(tFile,
+                             kVectorTime = NA,
+                             kVectorTag = NA){
+  # Input: 
+  #  tFile: 读取的单个ini文件。
+  #  kVectorTime: 目标时间，向量。
+  #  kVectorTag: 返回数据框的时间标签，向量。
+  #
+  # Output: 含Move Information各项信息的数据框。
+  
+  if (is.na(kVectorTime)[1]) {
+    stop("Please input the 'kVectorTime'.")  # 没有输入kVectorTime
+  } else if (is.na(kVectorTag)[1]) {
+    stop("Please input the 'kVectorTag'.")  # 没有输入kVectorTag
+  } else if (is.character(kVectorTime) & is.character(kVectorTag) &
+             length(kVectorTime) == length(kVectorTag)) {
+    
+    for (kTimeIdx in 1:length(kVectorTime)) {  # 依次计算各个Move Information
+      
+      tmpdf.moveinfo <- GetMoveInfo(tFile = tFile,
+                                    kTime = kVectorTime[kTimeIdx],
+                                    kTag = kVectorTag[kTimeIdx])
+      
+      ifelse(kTimeIdx == 1,
+             df.moveinfo <- tmpdf.moveinfo,
+             df.moveinfo <- cbind(df.moveinfo, tmpdf.moveinfo))
+    }
+    
+    return(df.moveinfo)
+    
+  } else {
+    stop("Please check the input 'kVectorTime' and 'kVectorTag'.\
+  The 'kVectorTime' should be a character vector.\
+  The 'kVectorTag' should be a character vector.\
+  The 'kVectorTime' and 'kVectorTag' should be the same length.")
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
