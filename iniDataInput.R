@@ -8,7 +8,9 @@
 #------------------------------------------------------------------------------#
 
 
-library(ini)  # 加载ini数据处理package
+library(ini)
+library(rlist)
+library(magrittr)
 
 # 加载数据导入需要的函数
 source('E:/R/iniFile/Functions.R', encoding = 'UTF-8')
@@ -19,36 +21,48 @@ setwd("E:/R/iniFile/Data/")
 get.filename <- list.files(path = "E:/R/iniFile/Data/", pattern = ".ini")
 get.dfname <- gsub(pattern = ".ini", replacement = "", x = get.filename)
 
-df.eventdata <- data.frame()  # 整理后的数据框
+df.event <- data.frame()  # 整理后的数据框
 
-for (i in 1:length(get.filename)) {
+# 目标时刻向量
+vector.time <- c("Time -8.00",
+                 "Time -7.75", "Time -7.50", "Time -7.25", "Time -7.00",
+                 "Time -6.75", "Time -6.50", "Time -6.25", "Time -6.00",
+                 "Time -5.75", "Time -5.50", "Time -5.25", "Time -5.00",
+                 "Time -4.75", "Time -4.50", "Time -4.25", "Time -4.00",
+                 "Time -3.75", "Time -3.50", "Time -3.25", "Time -3.00",
+                 "Time -2.75", "Time -2.50", "Time -2.25", "Time -2.00",
+                 "Time -1.75", "Time -1.50", "Time -1.25", "Time -1.00",
+                 "Time -0.75", "Time -0.50", "Time -0.25",
+                 "Time +0.00", "Time +0.25", "Time +0.50", "Time +0.75",
+                 "Time +1.00", "Time +1.25", "Time +1.50", "Time +1.75",
+                 "Time +2.00", "Time +2.25", "Time +2.50", "Time +2.75",
+                 "Time +3.00", "Time +3.25", "Time +3.50", "Time +3.75")
+
+# 标签向量
+vector.tag <- c("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10",
+                "T11", "T12", "T13", "T14", "T15", "T16", "T17", "T18", "T19",
+                "T20", "T21", "T22", "T23", "T24", "T25", "T26", "T27", "T28",
+                "T29", "T30", "T31", "T32", "T33", "T34", "T35", "T36", "T37",
+                "T38", "T39", "T40", "T41", "T42", "T43", "T44", "T45", "T46",
+                "T47", "T48")
+
+for (kFileIdx in 1:length(get.filename)) {
   
-  tfile <- read.ini(filepath = get.filename[i],
-                    encoding = getOption("encoding"))  # 单个ini导入
+  tmp.file <- read.ini(filepath = get.filename[kFileIdx],
+                       encoding = getOption("encoding"))  # 单个ini导入
   
-  tmp.eventdf <- data.frame(eventNum = get.dfname[i])  # 事件编号
+  # Basic Information 提取
+  tmpdf.event <- cbind(evntNum = get.dfname[kFileIdx],  # 事件编号
+                       GetBasicInformation(tFile = tmp.file))
   
-  # Basic Information数据提取
-  tmp.eventdf <- cbind(tmp.eventdf,
-                       GetBasicInformation(tfile))
-  
-  # Move Information数据提取，from Move Information0 to Move Information47
-  for (kTimeNum in 0:47) {
-    
-    tmp.moveinformation <- GetMoveInformation(tfile,
-                                              kTag = paste("Move Information",
-                                                           kTimeNum, sep = ""),
-                                              kTime = paste("Time",
-                                                            kTimeNum, sep = ""))
-    tmp.eventdf <- cbind(tmp.eventdf, tmp.moveinformation)
-  }
+  # Move Information 提取
+  tmpdf.event <- cbind(tmpdf.event,
+                       GetBatchMoveInfo(tFile = tmp.file,
+                                        kVectorTime = vector.time,
+                                        kVectorTag = vector.tag))
   
   # 合并数据
-  df.eventdata <- rbind(df.eventdata, tmp.eventdf)
+  df.event <- rbind(df.event, tmpdf.event)
 }
 
-
-
-
-
-
+get.dfname[3191]
