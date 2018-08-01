@@ -147,12 +147,47 @@ GetBasicInformation <- function(tFile) {
   
   
   # BI, Max_Forward_T_Force----
-  tmp.maxfwdforce <- ifelse(is.null(list.BI$Max_Forward_T_Force), NA,
-                            list.BI$Max_Forward_T_Force)
+  # 1. Max_Forward_T_Force不为NULL
+  if (!is.null(list.BI$Max_Forward_T_Force)) {
+    
+    tmp.maxfwdforceS <- strsplit(x = list.BI$Max_Forward_T_Force,
+                                 split = " ")[[1]]
+    
+    # 1.1 Max_Forward_T_Force不为NULL，Max_Forward_T_Force正常取值
+    if (length(tmp.maxfwdforceS) == 1) {
+      tmp.maxfwdforce <- list.BI$Max_Forward_T_Force
+      
+    # 1.2 Max_Forward_T_Force不为NULL，Max_Forward_T_Force非正常值
+    } else {
+      tmp.maxfwdforce <- NA
+    }
+    
+  # 2. Max_Forward_T_Force为NULL
+  } else {
+    tmp.maxfwdforce <- NA
+  }
+  
   
   # BI, Max_Lateral_T_Force----
-  tmp.maxlatforce <- ifelse(is.null(list.BI$Max_Lateral_T_Force), NA,
-                            list.BI$Max_Lateral_T_Force)
+  # 1. Max_Lateral_T_Force不为NULL
+  if (!is.null(list.BI$Max_Lateral_T_Force)) {
+    
+    tmp.maxlatforceS <- strsplit(x = list.BI$Max_Lateral_T_Force,
+                                 split = " ")[[1]]
+    
+    # 1.1 Max_Lateral_T_Force不为NULL，Max_Lateral_T_Force正常取值
+    if (length(tmp.maxlatforceS) == 1) {
+      tmp.maxlatforce <- list.BI$Max_Lateral_T_Force
+      
+    # 1.2 Max_Lateral_T_Force不为NULL，Max_Lateral_T_Force非正常值
+    } else {
+      tmp.maxlatforce <- NA
+    }
+    
+  # 1. Max_Lateral_T_Force为NULL
+  } else {
+    tmp.maxlatforce <- NA
+  }
   
   
   # BI, Speed----
@@ -177,18 +212,57 @@ GetBasicInformation <- function(tFile) {
   
   
   # BI, Heading----
-  tmp.movedir <- ifelse(is.null(list.BI$Heading), NA,
-                        list.BI$Heading)
+  # 1. Heading不为NULL
+  if (!is.null(list.BI$Heading)) {
+    
+    # 1.1 Heading不为NULL，Heading正常取值
+    if (list.BI$Heading != "Data not available") {
+      tmp.movedir <- list.BI$Heading
+      
+    # 1.2 Heading不为NULL，Heading非正常值
+    } else {
+      tmp.movedir <- NA
+    }
+  # 2. Heading为NULL
+  } else {
+    tmp.movedir <- NA
+  }
   
   
   # BI, Loaction_N----
-  tmp.loclat <- ifelse(is.null(list.BI$Loaction_N), NA,
-                       list.BI$Loaction_N)
-  
+  # 1. Loaction_N不为NULL
+  if (!is.null(list.BI$Loaction_N)) {
+    
+    # 1.1 Loaction_N不为NULL，Loaction_N正常取值
+    if (list.BI$Loaction_N != "Data not available") {
+      tmp.loclat <- list.BI$Loaction_N
+      
+      # 1.2 Loaction_N不为NULL，Loaction_N非正常值
+    } else {
+      tmp.loclat <- NA
+    }
+    # 2. Loaction_N为NULL
+  } else {
+    tmp.loclat <- NA
+  }
+
   
   # BI, Loaction_E----
-  tmp.loclong <- ifelse(is.null(list.BI$Loaction_E), NA,
-                        list.BI$Loaction_E)
+  # 1. Loaction_E不为NULL
+  if (!is.null(list.BI$Loaction_E)) {
+    
+    # 1.1 Loaction_E不为NULL，Loaction_E正常取值
+    if (list.BI$Loaction_E != "Data not available") {
+      tmp.loclong <- list.BI$Loaction_E
+      
+      # 1.2Loaction_E不为NULL，Loaction_E非正常值
+    } else {
+      tmp.loclong <- NA
+    }
+    # 2. Loaction_E为NULL
+  } else {
+    tmp.loclong <- NA
+  }
   
   
   # BI, Serial_Number----
@@ -237,16 +311,6 @@ GetBasicInformation <- function(tFile) {
                     latThold = tmp.latthold,
                     shockThold = tmp.shockthold))
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
