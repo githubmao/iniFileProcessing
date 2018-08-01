@@ -197,7 +197,7 @@ GetBasicInformation <- function(tFile) {
     tmp.speedGPS <- strsplit(x = list.BI$Speed, split = " ")[[1]]
     
     # 1.1 Speed不为NULL，Speed正常取值
-    if (length(tmp.speedGPS) == 5) {
+    if (list.BI$Speed != "Data not available") {
       tmp.triggerspeed <- tmp.speedGPS[1]
       
     # 1.2 Speed不为NULL，Speed非正常值
@@ -319,7 +319,7 @@ GetMoveInfo <- function(tFile,
                         kTag = NA){
   # Input: 
   #  tFile: 读取的单个ini文件。
-  #  kTime: 目标时间。
+  #  kTime: 目标时刻。
   #  kTag: 返回数据框的时间标签。
   #
   # Output: 含Move Information各项信息的数据框。
@@ -378,7 +378,7 @@ GetBatchMoveInfo <- function(tFile,
                              kVectorTag = NA){
   # Input: 
   #  tFile: 读取的单个ini文件。
-  #  kVectorTime: 目标时间，向量。
+  #  kVectorTime: 目标时刻，向量。
   #  kVectorTag: 返回数据框的时间标签，向量。
   #
   # Output: 含Move Information各项信息的数据框。
