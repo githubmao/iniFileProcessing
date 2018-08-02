@@ -46,6 +46,7 @@ vector.tag <- c("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10",
                 "T38", "T39", "T40", "T41", "T42", "T43", "T44", "T45", "T46",
                 "T47", "T48")
 
+# 数据导入
 for (kFileIdx in 1:length(get.filename)) {
   
   tmp.file <- read.ini(filepath = get.filename[kFileIdx],
@@ -65,4 +66,23 @@ for (kFileIdx in 1:length(get.filename)) {
   df.event <- rbind(df.event, tmpdf.event)
 }
 
-get.dfname[3191]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
