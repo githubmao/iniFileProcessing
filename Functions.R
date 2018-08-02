@@ -6,7 +6,8 @@
 #   GetDayoftheWeek: 获取事件发生的时间，星期几。
 #   GetMonth: 获取事件发生的时间，月份。
 #   GetBasicInformation: 获取ini数据中Basic Information标签下数据。
-#   GetMoveInformation: 获取ini数据中Move Information标签下数据。
+#   GetMoveInfo: 获取ini数据中单个Move Information标签下数据。
+#   GetBatchMoveInfo：获取ini数据中多个指定Time标签的Move Information标签下数据.
 #
 #------------------------------------------------------------------------------#
 
