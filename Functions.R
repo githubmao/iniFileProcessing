@@ -330,22 +330,46 @@ GetMoveInfo <- function(tFile,
     stop("Please input the 'kTag'.")  # 没有输入kTag
   } else if (is.character(kTime) & is.character(kTag)) {
     
-    tmp.list <- tFile[-length(names(tFile))]  # 只含MoveInformation的list
+    kDropListNum <- which(names(tFile) == "Basic Information")  # 识别BI
+    tmp.list <- tFile[-kDropListNum]  # 只含MoveInformation的list
     list.moveinfo <- list.filter(tmp.list, TIME == kTime)  # 目标list
     
     # 有满足kTimeTag时间点的 Move Information 列表
     if (length(list.moveinfo) != 0) {
       
       # FWD
-      tmp.fwd <- strsplit(x = list.moveinfo[[1]]$FWD, split = " ")[[1]][2]
+      if (!is.null(strsplit(x = list.moveinfo[[1]]$FWD,
+                            split = " ")[[1]][2])) {  # FWD不为NULL
+        tmp.fwd <- strsplit(x = list.moveinfo[[1]]$FWD, split = " ")[[1]][2]
+      } else {   # FWD为NULL
+        tmp.fwd <- NA
+      }
+      
       # LAT
-      tmp.lat <- strsplit(x = list.moveinfo[[1]]$LAT, split = " ")[[1]][2]
+      if (!is.null(strsplit(x = list.moveinfo[[1]]$LAT,
+                            split = " ")[[1]][2])) {  # LAT不为NULL
+        tmp.lat <- strsplit(x = list.moveinfo[[1]]$LAT, split = " ")[[1]][2]
+      } else {  # LAT为NULL
+        tmp.lat <- NA
+      }
+      
       # Time
       tmp.movetime <- kTime
-      # GPS, Speed
-      tmp.speed <- strsplit(x = list.moveinfo[[1]]$GPS, split = " ")[[1]][1]
       
-      # 没有满足kTimeTag时间点的 Move Information 列表
+      # GPS, Speed
+      if (!is.null(strsplit(x = list.moveinfo[[1]]$GPS,
+                            split = " ")[[1]][1]) &
+          strsplit(x = list.moveinfo[[1]]$GPS,
+                   split = " ")[[1]][1] != "--" &
+          strsplit(x = list.moveinfo[[1]]$GPS,
+                   split = " ")[[1]][1] != "Speed") {  # GPS不为NULL
+        tmp.speed <- strsplit(x = list.moveinfo[[1]]$GPS, split = " ")[[1]][1]
+      } else {  # GPS为NULL
+        tmp.speed <- NA
+      }
+      
+      
+    # 没有满足kTimeTag时间点的 Move Information 列表
     } else {
       tmp.fwd <- NA
       tmp.lat <- NA
