@@ -71,7 +71,3 @@ df.mcodingdata$evntNum <- paste("Event",
 df.evntdata <- merge(x = df.event,
                      y = df.mcodingdata,
                      by = "evntNum")  # 数据合并，只保留交集
-
-
-
-
