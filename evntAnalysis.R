@@ -62,7 +62,7 @@ nrow(df.singleevnt)
 kSingleEvntTypNum <- ceiling(nrow(df.singleevnt) * 40 / nrow(df.evntdata))
 kSingleEvntTypNum
 
-nrow(df.rearendevnt)
+row(df.rearendevnt)
 kRearEndEvntTypNum <- ceiling(nrow(df.rearendevnt) * 40 / nrow(df.evntdata))
 kRearEndEvntTypNum
 
@@ -97,7 +97,80 @@ kUnknownEvntTypNum
 
 
 # 单车事件聚类分析，分4类----
+# rdSurf标准化
+df.singleevnt <- transform(df.singleevnt,
+                           norRdSurf = ifelse(rdSurf == 1, 1,
+                                              ifelse(rdSurf <= 5, 2, 3)))
 
+# lightCond标准化
+df.singleevnt <- transform(df.singleevnt, norLightCond = lightCond)
+
+# tfcDens标准化
+df.singleevnt <- transform(df.singleevnt, norTfcDens = tfcDens)
+
+# weatCond标准化
+df.singleevnt <- transform(df.singleevnt,
+                           norWeatCond = ifelse(weatCond == 1, 1,
+                                                ifelse(weatCond <= 5, 2, 3)))
+
+# tfcSep标准化
+df.singleevnt <- transform(df.singleevnt,
+                           norTfcSep = ifelse(tfcSep == 1, 1,
+                                              ifelse(tfcSep == 2 | tfcSep == 3,
+                                                     2, 3)))
+
+# alignCond标准化
+df.singleevnt <- transform(df.singleevnt,
+                           norAlignCond = ifelse(alignCond == 1, 1,
+                                                 ifelse(alignCond == 2, 2,
+                                                        3)))
+
+# gradeCond标准化
+df.singleevnt <- transform(df.singleevnt,
+                           norGradeCond = ifelse(gradeCond <= 3, gradeCond, 4))
+
+# jctTyp标准化
+df.singleevnt <- transform(df.singleevnt,
+                           norJctTyp = ifelse(jctTyp <= 4, jctTyp + 1, 6))
+
+# preMnvr标准化
+df.singleevnt <- transform(df.singleevnt,
+                           norPreMnvr = ifelse(preMnvr <= 6, preMnvr, 7))
+
+# obsCause标准化
+df.singleevnt <- transform(df.singleevnt,
+                           norObsCause = ifelse(obsCause <= 5, obsCause + 1,
+                                                ifelse(obsCause <= 8, obsCause,
+                                                       obsCause - 1)))
+
+# evntTyp标准化
+df.singleevnt$evntTyp <- as.numeric(as.character(df.singleevnt$evntTyp))
+df.singleevnt <- transform(df.singleevnt,
+                           norEvntTyp = evntTyp - 10 + 1)
+
+# speedKMHT25标准化
+df.singleevnt$speedKMHT25 <- as.numeric(df.singleevnt$speedKMHT25)
+
+df.singleevnt <- transform(df.singleevnt,
+                           norSpeedT25 = speedKMHT25 /
+                             max(speedKMHT25, na.rm = TRUE))
+
+# 聚类分析
+df.singleevntd <- subset(df.singleevnt, select = c("evntNum",
+                                                   "norRdSurf",
+                                                   "norLightCond",
+                                                   "norTfcDens",
+                                                   "norWeatCond",
+                                                   "norTfcSep",
+                                                   "norAlignCond",
+                                                   "norGradeCond",
+                                                   "norJctTyp",
+                                                   "norPreMnvr",
+                                                   "norObsCause",
+                                                   "norEvntTyp",
+                                                   "norSpeedT25"))
+
+d <- dist(df.singleevntd)
 
 
 
