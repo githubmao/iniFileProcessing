@@ -51,10 +51,10 @@ kColName <- c("evntNum",  # 事件编号
               "drvrDistract",  # 驾驶人是否分心
               "distractCause",  # 驾驶人分心的原因
               "assOnDistract",  # 驾驶人分心对事件发生的影响
-              "OthRiskBehavior",  # 驾驶人其他危险行为
+              "othRiskBehavior",  # 驾驶人其他危险行为
               "infraCause",  # 交通设施原因
               "visObstruction",  # 是否有视野障碍
-              "ObsCause",  # 视野障碍的原因
+              "obsCause",  # 视野障碍的原因
               "vehFactor",  # 是否有车辆障碍对事件发生产生影响
               "avoidMnvr",  # 驾驶人的避让操作
               "evntSeverity",  # 事件严重程度
