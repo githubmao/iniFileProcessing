@@ -8,6 +8,7 @@
 
 
 library(ggplot2)
+library(stats)
 
 
 # 加载数据导入需要的函数
@@ -62,7 +63,7 @@ nrow(df.singleevnt)
 kSingleEvntTypNum <- ceiling(nrow(df.singleevnt) * 40 / nrow(df.evntdata))
 kSingleEvntTypNum
 
-row(df.rearendevnt)
+nrow(df.rearendevnt)
 kRearEndEvntTypNum <- ceiling(nrow(df.rearendevnt) * 40 / nrow(df.evntdata))
 kRearEndEvntTypNum
 
@@ -156,23 +157,85 @@ df.singleevnt <- transform(df.singleevnt,
                              max(speedKMHT25, na.rm = TRUE))
 
 # 聚类分析
-df.singleevntd <- subset(df.singleevnt, select = c("evntNum",
-                                                   "norRdSurf",
-                                                   "norLightCond",
-                                                   "norTfcDens",
-                                                   "norWeatCond",
-                                                   "norTfcSep",
-                                                   "norAlignCond",
-                                                   "norGradeCond",
-                                                   "norJctTyp",
-                                                   "norPreMnvr",
-                                                   "norObsCause",
-                                                   "norEvntTyp",
-                                                   "norSpeedT25"))
+df.singleevnt$evntNum <- as.character(df.singleevnt$evntNum)
+distdf.singleevnt <- subset(df.singleevnt, select = c("norRdSurf",
+                                                      "norLightCond",
+                                                      "norTfcDens",
+                                                      "norWeatCond",
+                                                      "norTfcSep",
+                                                      "norAlignCond",
+                                                      "norGradeCond",
+                                                      "norJctTyp",
+                                                      "norPreMnvr",
+                                                      "norObsCause",
+                                                      "norEvntTyp",
+                                                      "norSpeedT25"))
 
-d <- dist(df.singleevntd)
+dist.singleevnt <- dist(x = distdf.singleevnt, method = "euclidean")
+
+hc.singleevnt <- hclust(d = dist.singleevnt, method = "single")
+
+plot(hc.singleevnt, hang = -1, cex = 0.8)
+
+re <- rect.hclust(hc.singleevnt, k = 5)
+re
+
+id.singleevnt <- cutree(tree = hc.singleevnt, k = 5)
+id.singleevnt
 
 
+df.singleevnt <- data.frame(df.singleevnt, evntCat = id.singleevnt)
+df.singleevnt$evntCat <- as.character(df.singleevnt$evntCat)
+
+df.singleevntcat1 <- subset(df.singleevnt, evntCat == "1")
+nrow(df.singleevntcat1)
+
+df.singleevntcat2 <- subset(df.singleevnt, evntCat == "2")
+nrow(df.singleevntcat2)
+
+df.singleevntcat3 <- subset(df.singleevnt, evntCat == "3")
+nrow(df.singleevntcat3)
+
+df.singleevntcat4 <- subset(df.singleevnt, evntCat == "4")
+nrow(df.singleevntcat4)
+
+df.singleevntcat5 <- subset(df.singleevnt, evntCat == "5")
+nrow(df.singleevntcat5)
+
+df.singleevntcat1$rdSurf <- as.factor(df.singleevntcat1$rdSurf)
+summary(df.singleevntcat1$rdSurf)
+
+df.singleevntcat1$lightCond <- as.factor(df.singleevntcat1$lightCond)
+summary(df.singleevntcat1$lightCond)
+
+df.singleevntcat1$tfcDens <- as.factor(df.singleevntcat1$tfcDens)
+summary(df.singleevntcat1$tfcDens)
+
+df.singleevntcat1$weatCond <- as.factor(df.singleevntcat1$weatCond)
+summary(df.singleevntcat1$weatCond)
+
+df.singleevntcat1$tfcSep <- as.factor(df.singleevntcat1$tfcSep)
+summary(df.singleevntcat1$tfcSep)
+
+df.singleevntcat1$alignCond <- as.factor(df.singleevntcat1$alignCond)
+summary(df.singleevntcat1$alignCond)
+
+df.singleevntcat1$gradeCond <- as.factor(df.singleevntcat1$gradeCond)
+summary(df.singleevntcat1$gradeCond)
+
+df.singleevntcat1$jctTyp <- as.factor(df.singleevntcat1$jctTyp)
+summary(df.singleevntcat1$jctTyp)
+
+df.singleevntcat1$preMnvr <- as.factor(df.singleevntcat1$preMnvr)
+summary(df.singleevntcat1$preMnvr)
+
+df.singleevntcat1$obsCause <- as.factor(df.singleevntcat1$obsCause)
+summary(df.singleevntcat1$obsCause)
+
+df.singleevntcat1$evntTyp <- as.factor(df.singleevntcat1$evntTyp)
+summary(df.singleevntcat1$evntTyp)
+
+mean(df.singleevntcat1$speedKMHT25, na.rm = TRUE)
 
 
 
